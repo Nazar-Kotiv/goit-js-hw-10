@@ -49,6 +49,7 @@ const startTimer = () => {
   }
 
   startButton.disabled = true;
+  flatpickr(datetimePicker, { enable: false }); 
   countdownInterval = setInterval(() => {
     const updatedTime = convertMs(userSelectedDate - new Date());
     updateTimerDisplay(updatedTime);
@@ -82,15 +83,17 @@ const validateDate = (selectedDate) => {
 
 datetimePicker.addEventListener('input', () => {
   const selectedDate = new Date(datetimePicker.value);
-  if (isNaN(selectedDate)) {
+  if (isNaN(selectedDate) || selectedDate <= new Date()) {
     iziToast.error({
       title: 'Error',
-      message: 'Please choose a valid date',
+      message: 'Please choose a valid date in the future',
       position: 'topRight',
     });
     startButton.disabled = true;
   } else {
-    validateDate(selectedDate);
+    iziToast.destroy();
+    userSelectedDate = selectedDate;
+    startButton.disabled = false;
   }
 });
 
